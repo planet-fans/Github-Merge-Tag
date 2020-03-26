@@ -1,13 +1,10 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Github MergeTag'
+description: 'Tags merge commits with branch name'
+author: 'Planet'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+  branch:
+    description: 'The head branch of the pull request'
+    default: ${{ github.head_ref }}
 runs:
   using: 'node12'
   main: 'dist/index.js'
