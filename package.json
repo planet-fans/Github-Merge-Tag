@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "Github-Merge-Tag",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "TypeScript template aTags merge commits with branch name",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -22,7 +22,7 @@
     "node",
     "setup"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "Planet",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.3",
