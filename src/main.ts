@@ -1,4 +1,4 @@
-import core from '@actions/core'
+import * as core from '@actions/core'
 import { GitHub, context } from '@actions/github'
 
 const BRANCH_REGEX = /refs\/heads\/(?:feature|hotfix)\/PM-(?:[0-9]+)/
