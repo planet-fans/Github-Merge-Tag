@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { GitHub, context } from '@actions/github'
 
-const BRANCH_REGEX = /refs\/heads\/(?:feature|hotfix)\/PM-(?:[0-9]+)/
+const BRANCH_REGEX = /(?:feature|hotfix)\/PM-(?:[0-9]+)/
 
 async function run(): Promise<void> {
   try {
@@ -10,21 +10,18 @@ async function run(): Promise<void> {
     const sha = process.env.GITHUB_SHA || ''
 
     const fixTag = (rawBranch: string): string => {
-      if (BRANCH_REGEX.test(rawBranch)) return rawBranch.split('/').slice(-1)[0]
+      if (BRANCH_REGEX.test(rawBranch)) return rawBranch.split('/')[1]
       return rawBranch
-        .split('/')
-        .slice(2)
-        .join('/')
     }
 
     const tag = fixTag(branch)
 
     const octokit = new GitHub(token)
 
-    await octokit.git.createTag({
+    const newTag = await octokit.git.createTag({
       ...context.repo,
       tag,
-      message: branch,
+      message: tag,
       object: sha,
       type: 'commit',
     })
@@ -32,7 +29,7 @@ async function run(): Promise<void> {
     await octokit.git.createRef({
       ...context.repo,
       ref: `refs/tags/${tag}`,
-      sha,
+      sha: newTag.data.sha,
     })
   } catch (error) {
     core.setFailed(error.message)

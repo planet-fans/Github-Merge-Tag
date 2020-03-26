@@ -2020,7 +2020,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
-const BRANCH_REGEX = /refs\/heads\/(?:feature|hotfix)\/PM-(?:[0-9]+)/;
+const BRANCH_REGEX = /(?:feature|hotfix)\/PM-(?:[0-9]+)/;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -2029,16 +2029,13 @@ function run() {
             const sha = process.env.GITHUB_SHA || '';
             const fixTag = (rawBranch) => {
                 if (BRANCH_REGEX.test(rawBranch))
-                    return rawBranch.split('/').slice(-1)[0];
-                return rawBranch
-                    .split('/')
-                    .slice(2)
-                    .join('/');
+                    return rawBranch.split('/')[1];
+                return rawBranch;
             };
             const tag = fixTag(branch);
             const octokit = new github_1.GitHub(token);
-            yield octokit.git.createTag(Object.assign(Object.assign({}, github_1.context.repo), { tag, message: branch, object: sha, type: 'commit' }));
-            yield octokit.git.createRef(Object.assign(Object.assign({}, github_1.context.repo), { ref: `refs/tags/${tag}`, sha }));
+            const newTag = yield octokit.git.createTag(Object.assign(Object.assign({}, github_1.context.repo), { tag, message: tag, object: sha, type: 'commit' }));
+            yield octokit.git.createRef(Object.assign(Object.assign({}, github_1.context.repo), { ref: `refs/tags/${tag}`, sha: newTag.data.sha }));
         }
         catch (error) {
             core.setFailed(error.message);
